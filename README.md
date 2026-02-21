@@ -117,8 +117,8 @@ Because the experimental Ni–W dataset lacks ground truth precipitate labels, a
 
 This implements:
 
-- B: Precipitate / second-phase detection
-- D: Simulation-validated framework
+- Precipitate / second-phase detection
+- Simulation-validated framework
 
 ---
 
