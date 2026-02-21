@@ -37,6 +37,98 @@ Each scan location contains structural information encoded in the diffraction pa
 The challenge is extracting this information automatically and reproducibly.
 
 ---
+## Pipeline Overview (Physics-Guided + Unsupervised)
+
+This project segments 4D-STEM scans into regions with distinct diffraction behavior using a physics-guided feature + unsupervised learning pipeline.
+
+### Input Data Format
+The pipeline expects a 4D-STEM array:
+
+- `data4d.shape = (ny, nx, ky, kx)`
+  - `(ny, nx)` = real-space scan grid
+  - `(ky, kx)` = diffraction pattern at each scan position
+
+### Step 1 — Radial Fingerprint Feature Extraction
+Function: `radial_fingerprint_features(data4d, nbins=20, center=None)`
+
+For every diffraction pattern:
+
+1. Define the diffraction center:
+   - default center = `(ky//2, kx//2)` if not provided
+2. Compute radius `R` for every diffraction pixel relative to the center.
+3. Split reciprocal space into `nbins` concentric radial bins (rings).
+4. For each bin, sum intensity inside the ring.
+
+This yields a radial intensity profile per scan position (a "fingerprint"):
+
+- `rad_norm.shape = (ny, nx, nbins)`
+
+To make features robust to overall intensity scaling (e.g., thickness, dose), the radial profile is normalized by the total diffraction intensity:
+
+- `rad_norm = radial_sums / total_intensity`
+
+The function returns:
+- `Xflat`: flattened features `(ny*nx, nbins)`
+- `Ximg`: image-form features `(ny, nx, nbins)`
+
+### Step 2 — Optional Low-q Exclusion
+In `run_pipeline`, you can remove the first few bins near the central beam:
+
+- `exclude_low_q > 0` removes the first `exclude_low_q` bins.
+
+This is useful because very low-q intensity can dominate and may reflect thickness/background more than structural differences.
+
+### Step 3 — Standardization
+Before PCA and clustering, features are standardized:
+
+- `StandardScaler()` makes each feature dimension have mean 0 and variance 1.
+
+This prevents any one radial bin from dominating due to scale differences.
+
+### Step 4 — PCA (Dimensionality Reduction)
+The standardized features are projected to a lower-dimensional space using PCA:
+
+- `pca = PCA(n_components=n_pca)`
+- `Z = pca.fit_transform(Xs)`
+
+Then only the first `pca_use` principal components are used for clustering:
+
+- `Z_use = Z[:, :pca_use]`
+
+The pipeline also returns `explained_variance_ratio` to show how much diffraction variance PCA captures.
+
+### Step 5 — Unsupervised Clustering
+Two clustering options are supported:
+
+- **KMeans** (`method="kmeans"`)
+- **Gaussian Mixture Model** (`method="gmm"`)
+
+Both cluster scan positions based on `Z_use`.
+
+Output labels are reshaped back into scan space:
+
+- `labels.shape = (ny, nx)`
+
+This label map is the final segmentation result.
+
+### Outputs Returned by `run_pipeline`
+`run_pipeline()` returns a dictionary containing:
+
+- `labels`: segmentation map `(ny, nx)`
+- `labels_flat`: labels `(ny*nx,)`
+- `Xfeat_flat`: radial features `(ny*nx, nbins - exclude_low_q)`
+- `Xfeat_img`: radial features `(ny, nx, nbins - exclude_low_q)`
+- `Z`: PCA embedding `(ny*nx, n_pca)`
+- `explained_variance_ratio`: PCA variance fractions
+- fitted objects: `model`, `pca`, `scaler`
+
+### Physical Interpretation (Materials Science Meaning)
+- The radial fingerprint captures how scattering intensity is distributed across scattering vectors (q).
+- Differences in fingerprints can reflect:
+  - different phases / second phases (different scattering factors or reflections)
+  - orientation domains (diffraction intensity redistribution)
+  - strain/thickness variations (changes in low-q vs high-q intensity)
+- Clustering groups scan positions with similar scattering behavior, producing a physics-guided segmentation map.
 
 # Part 1 — 01_NiW_experimental
 
