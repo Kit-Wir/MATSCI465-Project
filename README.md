@@ -1,124 +1,134 @@
-# 01_NiW_experimental
-
-## Physics-Guided Unsupervised Segmentation of Experimental Ni–W 4D-STEM Data
-
----
+# Physics-Guided Automated Precipitate Detection in 4D-STEM
 
 ## Overview
 
-This notebook applies a physics-guided unsupervised learning pipeline to an experimental 4D-STEM dataset of a Ni–W alloy.
+This project develops and validates a physics-guided computational pipeline for automated second-phase (precipitate) detection in 4D-STEM diffraction datasets.
 
-4D-STEM (Four-Dimensional Scanning Transmission Electron Microscopy) records:
+The core idea is:
 
-- 2D probe scan positions (real space: x, y)
-- A full diffraction pattern at each scan position (reciprocal space: kx, ky)
+> Use physically meaningful diffraction features (radial intensity fingerprints), combined with unsupervised learning (PCA + clustering), to identify regions with distinct scattering behavior — without manual labeling.
 
-This produces a 4D dataset:
+The project consists of three parts:
 
-(scan_y, scan_x, k_y, k_x)
+1. Experimental application to Ni–W 4D-STEM data  
+2. Simulation-based validation with ground truth precipitates  
+3. Robustness and detection-limit analysis  
 
-Each scan location contains a diffraction pattern encoding local structural information such as:
-
-- Crystal orientation
-- Strain
-- Thickness
-- Possible second phases
+Together, these form a complete computational microscopy framework.
 
 ---
 
-## Scientific Motivation
+# Background: What is 4D-STEM?
 
-In metallic alloys, nanoscale precipitates and second phases significantly affect mechanical properties.
+4D-STEM (Four-Dimensional Scanning Transmission Electron Microscopy) records:
 
-However:
+- A 2D scan of probe positions over the sample (real space: x, y)
+- A full 2D diffraction pattern at each scan position (reciprocal space: kx, ky)
 
-- Real-space imaging may not clearly reveal them
-- Manual diffraction inspection is subjective
-- Automated physics-informed detection is needed
+This produces a 4D dataset:
 
-This notebook explores whether unsupervised clustering of diffraction fingerprints can identify physically distinct regions without labels.
+Each scan location contains structural information encoded in the diffraction pattern, including:
+
+- Crystal orientation
+- Strain
+- Thickness variations
+- Presence of second phases or precipitates
+
+The challenge is extracting this information automatically and reproducibly.
+
+---
+
+# Part 1 — 01_NiW_experimental
+
+## Objective
+
+Apply a physics-guided unsupervised pipeline to experimental Ni–W 4D-STEM data to segment regions with distinct diffraction behavior.
+
+This part demonstrates real-data application.
 
 ---
 
 ## Method
 
-### 1. Radial Fingerprint Extraction
+### 1. Radial Diffraction Fingerprints
 
-Each diffraction pattern is converted into a radial intensity profile:
+For each diffraction pattern:
 
 - Reciprocal space is divided into radial bins
-- Intensity is averaged per bin
-- Profiles are normalized by total intensity
+- Intensity is averaged within each bin
+- The profile is normalized by total intensity
 
-This generates a physics-based feature vector describing scattering distribution.
+This produces a compact feature vector representing:
+
+Intensity vs scattering vector magnitude
+
+This is a physics-based descriptor of scattering behavior.
 
 ---
 
 ### 2. Standardization
 
-Features are standardized to zero mean and unit variance.
+Features are standardized to zero mean and unit variance to remove scale bias.
 
 ---
 
-### 3. PCA (Dimensionality Reduction)
+### 3. Dimensionality Reduction (PCA)
 
-Principal Component Analysis is applied to:
+Principal Component Analysis (PCA) is applied to:
 
 - Reduce noise
 - Capture dominant diffraction variance
-- Compress features
+- Compress feature space
 
 ---
 
-### 4. Clustering
+### 4. Unsupervised Clustering
 
 Clustering is performed using:
 
 - K-means or
-- Gaussian Mixture Model (GMM)
+- Gaussian Mixture Models (GMM)
 
-Cluster labels are reshaped back into spatial coordinates to form segmentation maps.
+Cluster labels are mapped back to scan coordinates to produce spatial segmentation maps.
 
 ---
 
 ## Outputs
 
 - Mean diffraction pattern
-- Spatial segmentation map
+- Segmentation map
 - Cluster radial fingerprints
 
 ---
 
 ## Interpretation
 
-The segmentation map reveals spatially coherent regions with distinct diffraction behavior.
+The segmentation map identifies spatially coherent regions with distinct diffraction signatures.
 
 Important:
 
-This notebook does not claim confirmed precipitate detection in Ni–W. Instead, it demonstrates that the physics-guided pipeline identifies diffraction regimes in real experimental data.
+This notebook does not claim confirmed precipitate detection in Ni–W.
 
-Validation of precipitate detection capability is performed in:
+Instead, it demonstrates:
 
-02_Synthetic_BD_validation
+> The method can identify diffraction regimes in experimental data without labels.
 
-Robustness analysis is performed in:
-
-03_Robustness_ablation# 02_Synthetic_BD_validation
-
-## Simulation-Validated Precipitate Detection Using Physics-Guided 4D-STEM Features
+Validation of precipitate detection capability is performed in Part 2.
 
 ---
 
-## Purpose
+# Part 2 — 02_Synthetic_BD_validation
 
-This notebook validates whether the diffraction-based unsupervised pipeline can detect precipitates when they are known to exist.
+## Objective
 
-Because the experimental Ni–W dataset lacks ground truth precipitate labels, a synthetic 4D-STEM dataset is generated.
+Validate that the pipeline can detect precipitates when they are known to exist.
+
+Because experimental data lacks ground truth labels, synthetic 4D-STEM datasets are generated.
 
 This implements:
 
-- Precipitate / second-phase detection
-- Simulation-validated framework
+- (B) Precipitate detection  
+- (D) Simulation-validated framework  
 
 ---
 
@@ -126,8 +136,8 @@ This implements:
 
 Each synthetic dataset includes:
 
-- Matrix diffraction background
-- Orientation/thickness variation
+- Matrix diffraction pattern
+- Orientation/thickness variation across scan
 - Circular precipitate regions in real space
 - Modified diffraction patterns inside precipitates
 - Poisson shot noise controlled by electron dose
@@ -136,7 +146,7 @@ Three physical cases are simulated:
 
 ---
 
-### 1. Matrix-only (Baseline)
+### Case 1 — Matrix-only (Baseline)
 
 - No precipitates exist
 - Used to test false positive behavior
@@ -149,17 +159,20 @@ This confirms the method does not hallucinate precipitates.
 
 ---
 
-### 2. Coherent Precipitates
+### Case 2 — Coherent Precipitates
 
 - Subtle diffraction modification
 - Harder detection scenario
 
-Current result:
-- IoU ≈ 1 (strong contrast setting)
+Result (current setting):
+- IoU ≈ 1
+- F1 ≈ 1
+
+Detection succeeds due to sufficient contrast.
 
 ---
 
-### 3. Incoherent Precipitates
+### Case 3 — Incoherent Precipitates
 
 - Strong additional scattering
 - Clear diffraction contrast
@@ -168,23 +181,13 @@ Result:
 - IoU ≈ 1
 - F1 ≈ 1
 
----
-
-## Detection Procedure
-
-The exact same pipeline from:
-
-01_NiW_experimental
-
-is applied to synthetic data without modification.
-
-Cluster-to-precipitate mapping is determined automatically by selecting the cluster with the highest overlap with ground truth.
+Detection is robust and accurate.
 
 ---
 
 ## Evaluation Metrics
 
-For each run:
+Detection quality is quantified using:
 
 - True Positives (TP)
 - False Positives (FP)
@@ -194,37 +197,29 @@ For each run:
 - F1 Score
 - Intersection over Union (IoU)
 
-These metrics quantify detection performance.
+This transforms the project from visual clustering to quantitative validation.
 
 ---
 
-## Key Result
+## Key Scientific Result
 
 The pipeline:
 
 - Produces zero false positives in matrix-only case
-- Correctly identifies incoherent precipitates
-- Successfully separates diffraction regimes using purely unsupervised physics-guided features
+- Correctly identifies precipitate regions
+- Separates diffraction regimes using purely physics-guided features
 
-This demonstrates true precipitate detection capability.
-
----
-
-## Scientific Meaning
-
-This notebook proves that radial diffraction fingerprints combined with PCA + clustering can detect precipitate-induced diffraction changes when they exist.
-
-This provides quantitative validation of the framework.# 03_Robustness_ablation
-
-## Detection Robustness and Noise Sensitivity Analysis
+This establishes true precipitate detection capability.
 
 ---
 
-## Purpose
+# Part 3 — 03_Robustness_ablation
 
-This notebook evaluates the robustness of precipitate detection under varying noise levels and hyperparameters.
+## Objective
 
-A scientifically credible detection framework must:
+Evaluate robustness and detection limits under varying conditions.
+
+A scientifically credible detection method must:
 
 - Avoid false positives
 - Remain stable under noise
@@ -238,57 +233,58 @@ Poisson noise is controlled via electron dose.
 
 Lower dose → higher noise.
 
-Detection performance (IoU, F1) is evaluated across dose levels.
+Detection performance (IoU, F1) is evaluated across multiple dose levels.
 
----
+Result summary:
 
-## Results Summary
-
-Matrix-only case:
-- IoU ≈ 0 at all noise levels
-- No hallucinated precipitates
-
-Incoherent case:
-- IoU ≈ 1 across noise levels
-- Strong detection robustness
-
-Coherent case:
-- Currently IoU ≈ 1 under present contrast setting
+- Matrix-only case → IoU ≈ 0 at all noise levels
+- Incoherent case → IoU ≈ 1 across noise levels
+- Coherent case → IoU ≈ 1 under current contrast
 
 ---
 
 ## Hyperparameter Sweep
 
-The following were varied:
+The following parameters are varied:
 
 - PCA components
 - Number of clusters (k)
 
-Best-over-hyperparameters and fixed-parameter results are compared.
+Two evaluation modes are used:
+
+1. Fixed hyperparameters
+2. Best-over-hyperparameters
+
+This ensures performance is not due to parameter tuning alone.
 
 ---
 
 ## Scientific Contribution
 
-This notebook transforms the project from:
+This notebook elevates the project from:
 
 "Clustering demonstration"
 
-into:
+to:
 
-"Quantitative detection-limit and robustness study of physics-guided diffraction segmentation."
+"Quantitative detection-limit study of physics-guided diffraction segmentation."
 
 ---
 
-## Final Project Structure
+Together, these components form a complete computational microscopy framework for automated second-phase mapping using 4D-STEM.
 
-01_NiW_experimental  
-→ Experimental application
+---
 
-02_Synthetic_BD_validation  
-→ Simulation validation
+# Summary
 
-03_Robustness_ablation  
-→ Detection limits and stability analysis
+This project demonstrates:
 
-Together, these provide a complete computational microscopy framework for automated second-phase mapping using 4D-STEM.
+- Physics-guided feature engineering (radial diffraction fingerprints)
+- Unsupervised learning for diffraction segmentation
+- Simulation-based validation with ground truth
+- Quantitative robustness analysis
+- Application to real experimental data
+
+The framework provides a reproducible, label-free method for automated second-phase detection in 4D-STEM datasets.
+
+# Complete Project Structure
