@@ -1,4 +1,4 @@
-# Physics-Guided Automated Precipitate Detection in 4D-STEM
+# Physics-Guided Automated Second Phase/Precipitate Detection in 4D-STEM
 
 ## Overview
 
