@@ -481,20 +481,7 @@ The purpose of `pipelinefinalproject` is to:
 ---
 
 #  Pipeline Architecture
-Raw 4D Data
-↓
-Preprocessing
-↓
-Physics-Based Feature Extraction
-↓
-Robust Scaling + PCA
-↓
-Unsupervised Clustering (GMM / KMeans)
-↓
-Precipitate Mapping Heuristic
-↓
-Optional Spatial Refinement
-
+Raw 4D Data --> Preprocessing --> Physics-Based Feature Extraction --> Robust Scaling + PCA --> Unsupervised Clustering (GMM / KMeans) --> Precipitate Mapping Heuristic --> Optional Spatial Refinement 
 
 ---
 
