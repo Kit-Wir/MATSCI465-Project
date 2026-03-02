@@ -498,7 +498,7 @@ Optional Spatial Refinement
 
 ---
 
-# ⚙ Core Components
+#  Core Components
 
 ## 1️ Preprocessing
 
