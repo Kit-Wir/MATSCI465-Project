@@ -381,12 +381,12 @@ The framework provides a reproducible, label-free method for automated second-ph
 
 #Updated 03/01/2026
 
-# 🧪 PipelineFinalProject  
+#  PipelineFinalProject  
 **Physics-Guided Unsupervised Phase Detection in 4D-STEM**
 
 ---
 
-## 📌 Overview
+##  Overview
 
 `pipelinefinalproject.py` is an updated and expanded version of my original pipeline (`pipeline.py`) for unsupervised phase detection in 4D-STEM datasets.
 
@@ -411,7 +411,7 @@ This updated version is designed to handle both:
 
 ---
 
-# 🧠 Scientific Motivation
+#  Scientific Motivation
 
 In real 4D-STEM experiments, phase contrast competes with:
 
@@ -430,13 +430,13 @@ The purpose of `pipelinefinalproject` is to:
 
 ---
 
-# 🏗 Pipeline Architecture
-# 🧪 PipelineFinalProject  
+#  Pipeline Architecture
+#  PipelineFinalProject  
 **Physics-Guided Unsupervised Phase Detection in 4D-STEM**
 
 ---
 
-## 📌 Overview
+##  Overview
 
 `pipelinefinalproject.py` is an updated and expanded version of my original pipeline (`pipeline.py`) for unsupervised phase detection in 4D-STEM datasets.
 
@@ -461,7 +461,7 @@ This updated version is designed to handle both:
 
 ---
 
-# 🧠 Scientific Motivation
+#  Scientific Motivation
 
 In real 4D-STEM experiments, phase contrast competes with:
 
@@ -480,7 +480,7 @@ The purpose of `pipelinefinalproject` is to:
 
 ---
 
-# 🏗 Pipeline Architecture
+#  Pipeline Architecture
 Raw 4D Data
 ↓
 Preprocessing
@@ -500,7 +500,7 @@ Optional Spatial Refinement
 
 # ⚙ Core Components
 
-## 1️⃣ Preprocessing
+## 1️ Preprocessing
 
 - Gaussian smoothing (noise suppression)
 - Log compression (dynamic range stabilization)
@@ -513,7 +513,7 @@ This prevents clustering from learning brightness instead of phase.
 
 ---
 
-## 2️⃣ Feature Groups (Modular)
+## 2️ Feature Groups (Modular)
 
 Unlike the original `pipeline.py` (radial only), the final version supports:
 
@@ -558,7 +558,7 @@ Captures:
 
 ---
 
-## 3️⃣ PCA Stabilization
+## 3️ PCA Stabilization
 
 Dimensionality reduction with variance target (default 95–98%).
 
@@ -569,7 +569,7 @@ Purpose:
 
 ---
 
-## 4️⃣ Clustering
+## 4️ Clustering
 
 Supported methods:
 - `kmeans` (fast)
@@ -577,7 +577,7 @@ Supported methods:
 
 ---
 
-## 5️⃣ Precipitate Mapping Heuristic
+## 5️ Precipitate Mapping Heuristic
 
 Cluster labels are arbitrary.
 
@@ -587,13 +587,13 @@ The pipeline assigns precipitate phase based on:
 
 ---
 
-## 6️⃣ Optional Spatial Refinement
+## 6️ Optional Spatial Refinement
 
 Reduces salt-and-pepper noise.
 
 ---
 
-# 🧪 SIMDataTest (Synthetic Validation Framework)
+#  SIMDataTest (Synthetic Validation Framework)
 
 File: `SIMDataTest.py`
 
@@ -648,7 +648,7 @@ Visual outputs:
 
 ---
 
-# 📊 Expected Behavior
+#  Expected Behavior
 
 ### Easy
 - Near-perfect F1
@@ -668,7 +668,7 @@ Degradation is expected and physically meaningful.
 
 ---
 
-# 📂 Supported Data Formats
+# Supported Data Formats
 
 ## DM4
 Loaded via HyperSpy or py4DSTEM import.
@@ -681,7 +681,7 @@ All data must be converted to:
 
 # ⚙ Core Components
 
-## 1️⃣ Preprocessing
+## 1️ Preprocessing
 
 - Gaussian smoothing (noise suppression)
 - Log compression (dynamic range stabilization)
@@ -694,7 +694,7 @@ This prevents clustering from learning brightness instead of phase.
 
 ---
 
-## 2️⃣ Feature Groups (Modular)
+## 2️ Feature Groups (Modular)
 
 Unlike the original `pipeline.py` (radial only), the final version supports:
 
@@ -739,7 +739,7 @@ Captures:
 
 ---
 
-## 3️⃣ PCA Stabilization
+## 3️ PCA Stabilization
 
 Dimensionality reduction with variance target (default 95–98%).
 
@@ -750,7 +750,7 @@ Purpose:
 
 ---
 
-## 4️⃣ Clustering
+## 4️ Clustering
 
 Supported methods:
 - `kmeans` (fast)
@@ -758,7 +758,7 @@ Supported methods:
 
 ---
 
-## 5️⃣ Precipitate Mapping Heuristic
+## 5️ Precipitate Mapping Heuristic
 
 Cluster labels are arbitrary.
 
@@ -768,13 +768,13 @@ The pipeline assigns precipitate phase based on:
 
 ---
 
-## 6️⃣ Optional Spatial Refinement
+## 6️ Optional Spatial Refinement
 
 Reduces salt-and-pepper noise.
 
 ---
 
-# 🧪 SIMDataTest (Synthetic Validation Framework)
+#  SIMDataTest (Synthetic Validation Framework)
 
 File: `SIMDataTest.py`
 
@@ -829,7 +829,7 @@ Visual outputs:
 
 ---
 
-# 📊 Expected Behavior
+#  Expected Behavior
 
 ### Easy
 - Near-perfect F1
@@ -849,7 +849,7 @@ Degradation is expected and physically meaningful.
 
 ---
 
-# 📂 Supported Data Formats
+#  Supported Data Formats
 
 ## DM4
 Loaded via HyperSpy or py4DSTEM import.
@@ -862,7 +862,7 @@ All data must be converted to: (Ny, Nx, Ky, Kx)
 
 ---
 
-# 🚀 Example Usage
+#  Example Usage
 
 ```python
 import pipelinefinalproject as pf
