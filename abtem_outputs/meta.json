@@ -1,0 +1,30 @@
+{
+  "accelerating_voltage_kV": 200.0,
+  "probe_semiangle_mrad": 30.0,
+  "detector_max_angle_mrad": 60.0,
+  "scan_size_A": [
+    14.08,
+    14.08
+  ],
+  "scan_grid_ny_nx": [
+    32,
+    32
+  ],
+  "diffraction_shape_ky_kx": [
+    69,
+    69
+  ],
+  "approx_diffraction_pixel_size_mrad": 1.7647058823529411,
+  "thickness_nm": 1.408,
+  "number_of_slices": 15,
+  "structure_description": "fcc Ni matrix (a=3.52 \u00c5), replicated (4, 4, 2), with substitutional W-rich cylindrical region",
+  "precipitate_composition": "W-rich (Ni -> W substitution inside cylinder)",
+  "precipitate_radius_A": 2.5343999999999998,
+  "precipitate_center_xy_A": [
+    7.04,
+    7.04
+  ],
+  "output_ordering": "(scan_y, scan_x, diffraction_y, diffraction_x)",
+  "dtype_data4d": "float32",
+  "dtype_mask": "uint8"
+}
