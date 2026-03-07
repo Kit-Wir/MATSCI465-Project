@@ -1,4 +1,5 @@
-# Physics-Guided Automated Precipitate Detection in 4D-STEM
+# Physics-Guided Automated Second-Phase Mapping in Metallic Alloys Using 4D-STEM
+
 ### MATSCI465-Project
 
 A Python pipeline for **automated detection of second phases and precipitates in metallic materials using 4D-STEM diffraction data**.
