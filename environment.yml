@@ -1,0 +1,12 @@
+name: matsci465_final_project
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - numpy
+  - scipy
+  - scikit-learn
+  - matplotlib
+  - pip
+  - pip:
+      - h5py
