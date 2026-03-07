@@ -1,407 +1,366 @@
-# Physics-Guided Automated Second Phase/Precipitate Detection in 4D-STEM
+# Physics-Guided Automated Precipitate Detection in 4D-STEM
+### MATSCI465-Project
 
-## Overview
+A Python pipeline for **automated detection of second phases and precipitates in metallic materials using 4D-STEM diffraction data**.
 
-This project develops and validates a physics-guided computational pipeline for automated second-phase (precipitate) detection in 4D-STEM diffraction datasets.
-
-The core idea is:
-
-> Use physically meaningful diffraction features (radial intensity fingerprints), combined with unsupervised learning (PCA + clustering), to identify regions with distinct scattering behavior — without manual labeling.
-
-The project consists of three parts:
-
-1. Experimental application to Ni–W 4D-STEM data  
-2. Simulation-based validation with ground truth precipitates  
-3. Robustness and detection-limit analysis  
-
-Together, these form a complete computational microscopy framework.
+This repository was developed for **MATSCI 465 – Advanced Electron Microscopy & Diffraction (Northwestern University)** and explores how **physics-informed feature engineering combined with unsupervised machine learning** can be used to identify microstructural phases directly from diffraction signatures.
 
 ---
 
-# Background: What is 4D-STEM?
+# Background
 
-4D-STEM (Four-Dimensional Scanning Transmission Electron Microscopy) records:
+Understanding the **distribution of second phases and nanoscale precipitates** is critical for controlling the mechanical and functional properties of structural alloys.
 
-- A 2D scan of probe positions over the sample (real space: x, y)
-- A full 2D diffraction pattern at each scan position (reciprocal space: kx, ky)
+Examples include:
 
-This produces a 4D dataset:
+- strengthening precipitates in **Al–Cu alloys**
+- **γ′ precipitates in Ni-based superalloys**
+- **GPI zones in age-hardenable aluminum alloys**
+- nanoscale phases in **additively manufactured metals**
 
-Each scan location contains structural information encoded in the diffraction pattern, including:
+Traditionally, precipitates are identified using:
 
-- Crystal orientation
-- Strain
-- Thickness variations
-- Presence of second phases or precipitates
+- high-resolution imaging  
+- diffraction pattern indexing  
+- strain mapping  
+- manual interpretation by experts  
 
-The challenge is extracting this information automatically and reproducibly.
+However, modern **4D-STEM experiments generate extremely large datasets**, where a diffraction pattern is recorded at every probe position.
 
----
-## Pipeline Overview (Physics-Guided + Unsupervised)
+A typical dataset has the form:
 
-This project segments 4D-STEM scans into regions with distinct diffraction behavior using a physics-guided feature + unsupervised learning pipeline.
+(scan_y, scan_x, qy, qx)
 
-### Input Data Format
-The pipeline expects a 4D-STEM array:
+This results in **thousands to millions of diffraction patterns**, making manual analysis impractical.
 
-- `data4d.shape = (ny, nx, ky, kx)`
-  - `(ny, nx)` = real-space scan grid
-  - `(ky, kx)` = diffraction pattern at each scan position
+Recent advances in computational microscopy suggest that **automated analysis pipelines** can extract meaningful microstructural information directly from diffraction signals.
 
-#  PipelineFinalProject  
-**Physics-Guided Unsupervised Phase Detection in 4D-STEM**
+This project explores a **physics-guided approach to automated phase detection** in 4D-STEM data.
 
 ---
 
-##  Overview
+# Project Goal
 
-- **pipelinefinalproject.py (Current Version)**  
-  - Multi-feature, physics-guided architecture  
-  - Robust preprocessing and detrending  
-  - Modular feature extraction  
-  - PCA stabilization  
-  - Improved cluster mapping heuristic  
-  - Synthetic validation framework (SIMDataTest)
+The goal of this project is to develop a **generalizable computational pipeline** that can:
 
-This updated version is designed to handle both:
-- Synthetic benchmarking data
-- Real experimental datasets (DM4, MIB/HDR)
+1. Process diffraction patterns from a 4D-STEM datacube  
+2. Extract physically meaningful diffraction features  
+3. Reduce feature dimensionality  
+4. Identify distinct diffraction signatures using clustering  
+5. Map those clusters back to spatial phase distributions  
+
+The pipeline is designed to work **without prior labeling**, making it useful for exploratory analysis of new materials systems.
 
 ---
 
-#  Scientific Motivation
+# Core Idea
 
-In real 4D-STEM experiments, phase contrast competes with:
+Different phases in a material produce **distinct diffraction signatures** due to differences in:
 
-- Thickness gradients
-- Illumination variation
-- Scan drift
-- Detector non-uniformity
-- Central disk dominance
-- Shot noise
+- lattice spacing  
+- crystal structure  
+- orientation  
+- strain fields  
+- scattering intensity distribution  
 
-Unsupervised clustering will always separate the strongest variance direction.
+Instead of relying on a single descriptor, the pipeline extracts **multiple complementary physics-based features** from each diffraction pattern.
 
-The purpose of `pipelinefinalproject` is to:
-
-> Suppress nuisance variation while preserving physically meaningful diffraction signatures of second phases.
+These features are combined and clustered to identify regions with similar diffraction behavior.
 
 ---
 
-#  Pipeline Architecture
-#  PipelineFinalProject  
-**Physics-Guided Unsupervised Phase Detection in 4D-STEM**
+# Pipeline Overview
+
+The workflow of the detection pipeline is:
+
+4D-STEM datacube  
+→ Diffraction preprocessing  
+→ Physics-guided feature extraction  
+→ Feature normalization  
+→ Dimensionality reduction (PCA)  
+→ Unsupervised clustering  
+→ Phase map reconstruction
 
 ---
 
-##  Overview
+# Feature Engineering
 
-`pipelinefinalproject.py` is an updated and expanded version of my original pipeline (`pipeline.py`) for unsupervised phase detection in 4D-STEM datasets.
+Each diffraction pattern is converted into a **feature vector** describing its scattering behavior.
 
-### Version History
-
-- **pipeline.py (Previous Version)**  
-  - Used **radial fingerprint features only**
-  - Demonstrated proof-of-concept unsupervised phase separation
-  - Limited robustness to real experimental nuisance variation
-
-- **pipelinefinalproject.py (Current Version)**  
-  - Multi-feature, physics-guided architecture  
-  - Robust preprocessing and detrending  
-  - Modular feature extraction  
-  - PCA stabilization  
-  - Improved cluster mapping heuristic  
-  - Synthetic validation framework (SIMDataTest)
-
-This updated version is designed to handle both:
-- Synthetic benchmarking data
-- Real experimental datasets (DM4, MIB/HDR)
+The pipeline extracts several categories of physics-informed descriptors.
 
 ---
 
-#  Scientific Motivation
+## Radial Fingerprints
 
-In real 4D-STEM experiments, phase contrast competes with:
+Radial intensity profiles capture the **distribution of scattering intensity as a function of momentum transfer (q)**.
 
-- Thickness gradients
-- Illumination variation
-- Scan drift
-- Detector non-uniformity
-- Central disk dominance
-- Shot noise
+These features encode:
 
-Unsupervised clustering will always separate the strongest variance direction.
+- lattice spacing differences  
+- ring positions  
+- peak sharpness  
 
-The purpose of `pipelinefinalproject` is to:
-
-> Suppress nuisance variation while preserving physically meaningful diffraction signatures of second phases.
+They are particularly useful for distinguishing phases with **different lattice parameters or diffraction peak structures**.
 
 ---
 
-#  Pipeline Architecture
-Raw 4D Data --> Preprocessing --> Physics-Based Feature Extraction --> Robust Scaling + PCA --> Unsupervised Clustering (GMM / KMeans) --> Precipitate Mapping Heuristic --> Optional Spatial Refinement 
+## Virtual Detector Features
+
+The pipeline constructs **virtual detector signals** similar to those used in STEM imaging:
+
+- Bright Field (BF)  
+- Dark Field (DF)  
+- Annular Dark Field (ADF)
+
+These detectors summarize scattering intensity in different angular regions of reciprocal space.
 
 ---
 
-#  Core Components
+## Angular Anisotropy
 
-## 1️ Preprocessing
+Angular features capture directional variations in diffraction intensity.
 
-- Gaussian smoothing (noise suppression)
-- Log compression (dynamic range stabilization)
-- Winsorization (robust clipping)
-- Central disk masking
-- Intensity normalization
-- Spatial detrending (removes thickness gradients)
+These descriptors can indicate:
 
-This prevents clustering from learning brightness instead of phase.
+- crystal orientation changes  
+- strain-induced anisotropy  
+- textured precipitates  
 
----
+The pipeline computes statistics such as:
 
-## 2️ Feature Groups (Modular)
-
-Unlike the original `pipeline.py` (radial only), the final version supports:
-
-### `"radial"`
-Radial intensity fingerprints  
-Captures:
-- Ring shifts
-- Superlattice reflections
-- Lattice parameter changes
+- angular sector variance  
+- entropy of angular intensity distribution  
 
 ---
 
-### `"detectors"`
-Virtual BF/DF/ADF integration  
-Captures:
-- Scattering redistribution
-- Diffuse intensity changes
+## Bragg-like Scattering Features
+
+Crystalline precipitates often produce stronger localized peaks.
+
+The pipeline measures:
+
+- number of local maxima  
+- peak intensity statistics  
+- overall "Bragg-like" scattering strength  
+
+These features help distinguish **crystalline precipitates from diffuse matrix scattering**.
 
 ---
 
-### `"angular"`
-Angular variance + entropy  
-Captures:
-- Ordering anisotropy
-- Symmetry breaking
+# Dimensionality Reduction
+
+The combined feature vector can contain **hundreds of dimensions**.
+
+To improve clustering stability and reduce noise:
+
+1. **Robust scaling** is applied  
+2. **Principal Component Analysis (PCA)** is used  
+
+PCA retains the principal components explaining approximately **98% of feature variance**.
 
 ---
 
-### `"bragginess"`
-Local maxima density / peak intensity  
-Captures:
-- Bragg disk strength
-- Superlattice spot formation
+# Unsupervised Clustering
+
+After dimensionality reduction, scan positions are clustered using:
+
+- **Gaussian Mixture Models (GMM)**  
+- **K-Means**
+
+For this project, the pipeline typically separates the data into two clusters:
+
+cluster 0 → matrix  
+cluster 1 → precipitate
+
+Because clustering labels are arbitrary, the pipeline determines the **most physically plausible mapping** based on cluster size and feature characteristics.
 
 ---
 
-### `"com"`
-Center-of-mass shifts  
-Captures:
-- Strain
-- Lattice distortions
+# Repository Structure
+
+MATSCI465-Project
+
+pipelinefinalproject.py  
+SIMDataTest.ipynb  
+Pipeline_Robustness_Test.ipynb  
+README.md
 
 ---
 
-## 3️ PCA Stabilization
+# Main Pipeline
 
-Dimensionality reduction with variance target (default 95–98%).
+## pipelinefinalproject.py
 
-Purpose:
-- Remove correlated nuisance features
-- Improve clustering stability
-- Reduce runtime
+This is the **final version of the precipitate detection pipeline**.
 
----
+Key capabilities include:
 
-## 4️ Clustering
-
-Supported methods:
-- `kmeans` (fast)
-- `gmm` (covariance-aware, recommended)
-
----
-
-## 5️ Precipitate Mapping Heuristic
-
-Cluster labels are arbitrary.
-
-The pipeline assigns precipitate phase based on:
-- Cluster size prior (precipitates typically rare)
-- Feature statistics
+- diffraction preprocessing  
+- diffraction center estimation  
+- radial fingerprint extraction  
+- virtual detector feature extraction  
+- angular anisotropy analysis  
+- Bragg-like scattering statistics  
+- PCA dimensionality reduction  
+- unsupervised clustering  
+- spatial phase map reconstruction  
 
 ---
 
-## 6️ Optional Spatial Refinement
+# Synthetic Data Testing
 
-Reduces salt-and-pepper noise.
+Because real 4D-STEM datasets often lack ground-truth phase labels, synthetic data is used to validate the pipeline.
 
 ---
 
-#  Example Usage
+## SIMDataTest.ipynb
+
+This notebook generates simulated 4D-STEM datasets representing:
+
+Matrix patterns
+
+- broad diffuse diffraction rings  
+- lower anisotropy  
+
+Precipitate patterns
+
+- sharper diffraction peaks  
+- stronger anisotropy  
+- higher scattering contrast  
+
+The notebook tests whether the pipeline can correctly separate the two phases.
+
+---
+
+# Robustness Testing
+
+## Pipeline_Robustness_Test.ipynb
+
+This notebook evaluates the pipeline under **increasingly challenging simulation conditions**.
+
+Three simulation regimes are tested.
+
+### Easy
+
+- strong precipitate signal  
+- low noise  
+- minimal experimental artifacts  
+
+Expected result: near-perfect phase separation.
+
+### Medium
+
+- moderate contrast  
+- beam drift  
+- noise  
+- orientation variation  
+
+Expected result: good but imperfect phase separation.
+
+### Hard
+
+- weak precipitate contrast  
+- rare precipitates  
+- strong noise  
+- thickness gradients  
+- beam drift  
+
+Expected result: degraded but still informative clustering.
+
+---
+
+# Evaluation Metrics
+
+Because synthetic datasets include ground truth phase masks, the following segmentation metrics are computed:
+
+- Precision  
+- Recall  
+- F1 score  
+- Intersection over Union (IoU)  
+- Accuracy  
+- True / False positive counts  
+
+These metrics provide a quantitative measure of pipeline performance.
+
+---
+
+# Example Usage
 
 ```python
 import pipelinefinalproject as pf
 
-res = pf.detect_phases_multi(
-    data4d,
-    n_clusters=2,
-    method="gmm",
-    feature_groups=["radial", "angular", "bragginess"],
-    detrend=True,
-    spatial_refine=True,
-    verbose=True
-)
+results = pf.detect_phases_multi(data4d)
 
-labels = res["labels_map"]
+phase_map = results["labels_map"]
+```
 
-# Pipeline_Robustness_Test
+Where the dataset has the form:
 
-Robustness benchmarking notebook for the **physics-guided automated second-phase / precipitate detection pipeline** developed for the MATSCI 465 final project. This notebook evaluates how well the pipeline performs under progressively more difficult simulated 4D-STEM conditions by testing **easy**, **medium**, and **hard** cases with known ground-truth masks.
-
-The notebook is designed to answer a simple question:
-
-> **How robust is the detection pipeline when precipitates become rarer, lower-contrast, noisier, and harder to separate from the matrix?**
-
-This benchmarking approach is consistent with the project goal of developing a reproducible diffraction-based framework for automated second-phase mapping in metallic alloys using 4D-STEM, and with the proposal’s plan to test robustness under synthetic perturbations. :contentReference[oaicite:0]{index=0} It also matches the course emphasis on reproducible computational workflows, quantitative evaluation, and 4D-STEM analysis pipelines. :contentReference[oaicite:1]{index=1}
+data4d shape = (ny, nx, pattern_y, pattern_x)
 
 ---
 
-## Purpose
+# Dependencies
 
-`Pipeline_Robustness_Test.ipynb` is a testing notebook for the final detection pipeline in `pipelinefinalproject.py`. It does **not** develop the pipeline itself; instead, it provides a controlled framework to:
+Core Python libraries:
 
-- generate simulated 4D-STEM datasets with known precipitate masks,
-- run the final unsupervised detection pipeline,
-- map cluster labels to a precipitate class,
-- compute quantitative segmentation metrics,
-- compare performance across multiple difficulty levels,
-- visualize prediction quality and failure modes.
+numpy  
+scipy  
+matplotlib  
+scikit-learn  
 
-This notebook is useful for:
+Optional libraries for real 4D-STEM workflows:
 
-- validating whether the pipeline works under controlled conditions,
-- demonstrating robustness in the final report or presentation,
-- identifying where the pipeline begins to fail,
-- motivating future improvements for real experimental datasets.
+py4DSTEM  
+hyperspy  
+abTEM  
 
 ---
 
-## What the notebook does
+# Limitations
 
-The notebook performs the following steps:
+The current implementation has several limitations:
 
-1. **Loads the final pipeline module**
-   - Imports `pipelinefinalproject as pf`
-   - Confirms which pipeline file is being used
+- clustering assumes two phases  
+- no explicit crystallographic indexing  
+- strain information not yet integrated  
+- spatial regularization not included  
 
-2. **Defines evaluation metrics**
-   - Precision
-   - Recall
-   - F1-score
-   - IoU
-   - Accuracy
-   - TP / FP / FN counts
+Future versions could integrate:
 
-3. **Defines a label-mapping helper**
-   - Because clustering labels are arbitrary, the notebook tests both binary mappings:
-     - precipitate = label 0
-     - precipitate = label 1
-   - It then keeps the mapping that gives the better agreement with ground truth
-
-4. **Defines a plotting helper**
-   For each simulation case, the notebook can display:
-   - ground-truth precipitate mask
-   - predicted precipitate mask
-   - XOR error map
-   - example matrix diffraction pattern
-   - example precipitate diffraction pattern
-   - radial fingerprints for matrix vs precipitate
-
-5. **Uses fixed pipeline settings**
-   The pipeline is run with a consistent set of parameters so that performance differences come mainly from the **simulation difficulty**, not from changing the model.
-
-6. **Runs three difficulty levels**
-   - **Easy**
-   - **Medium**
-   - **Hard**
-
-7. **Prints a summary table**
-   Final performance is reported side-by-side across all cases.
+- strain-based phase detection  
+- Bragg peak indexing  
+- graph-based clustering  
+- deep learning feature extraction  
 
 ---
 
-## Difficulty levels
+# Future Work
 
-The notebook defines three synthetic scenarios:
+Potential research directions include:
 
-### Easy
-A relatively favorable case with:
-- higher precipitate fraction,
-- stronger diffraction contrast,
-- lower noise,
-- no drift,
-- minimal beamstop effects,
-- no orientation variation.
-
-This case tests whether the pipeline can recover precipitates when the signal is clear.
-
-### Medium
-A more realistic intermediate case with:
-- lower precipitate fraction,
-- moderate contrast,
-- higher noise,
-- nonzero drift,
-- thickness gradient,
-- beamstop effects,
-- orientation variation.
-
-This case tests whether the pipeline remains stable when multiple nuisance factors are present.
-
-### Hard
-A challenging case with:
-- rare precipitates,
-- weak contrast,
-- strong noise,
-- larger drift,
-- thickness gradient,
-- beamstop effects,
-- orientation variation.
-
-This case tests the limits of the pipeline and highlights likely failure modes in more difficult experimental conditions.
+- applying the pipeline to **real metallic 4D-STEM datasets**  
+- incorporating **strain mapping features**  
+- detecting **coherent nanoscale precipitates**  
+- extending the method to **multi-phase materials**
 
 ---
 
-## Pipeline settings used
+# Author
 
-The notebook uses a fixed configuration for `detect_phases_multi()`:
+Kittichat Wiratkapun  
+Kyle Xu
 
-- `n_clusters=2`
-- `method="gmm"`
-- `radial_bins=96`
-- `feature_groups=["radial", "detectors", "angular", "bragginess"]`
-- preprocessing with:
-  - Gaussian blur
-  - log compression
-  - winsorization
-  - center masking
-  - max normalization
-- PCA enabled with `pca_var=0.98`
-- no detrending
-- precipitate mapping enabled
-- rare-phase prior via `size_prior=0.2`
-- no spatial refinement
-
-These settings were chosen to provide a stable baseline for comparing simulation conditions rather than for exhaustive hyperparameter optimization.
+M.S. Student  
+Materials Science and Engineering  
+Northwestern University
 
 ---
 
-## Simulation options
+# Acknowledgments
 
-The notebook supports two ways to generate test data.
+Developed as part of:
 
-### Option A: Custom notebook simulator
-Uses your own simulation function:
-
-```python
-simulate_metal_4dstem_dataset(...)
+MATSCI 465 – Advanced Electron Microscopy & Diffraction  
+Northwestern University
