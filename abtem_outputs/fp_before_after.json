@@ -1,0 +1,18 @@
+{
+  "before": {
+    "FP_frac_matrix": 0.5,
+    "precip_IoU_F1": [
+      0.2183908045976999,
+      0.35849056603773416
+    ]
+  },
+  "after": {
+    "FP_frac_matrix": 0.0,
+    "precip_IoU_F1": [
+      0.2183908045976999,
+      0.35849056603773416
+    ],
+    "k_selected_matrix": 1,
+    "k_selected_precip": 2
+  }
+}

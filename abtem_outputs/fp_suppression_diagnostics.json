@@ -1,0 +1,40 @@
+{
+  "matrix": {
+    "method": "gmm",
+    "feature_set": "all",
+    "radial_bins": 40,
+    "minor_frac": 0.5,
+    "frac_label1": 0.5,
+    "bic1": NaN,
+    "bic2": NaN,
+    "silhouette": NaN,
+    "cfg": {
+      "max_minor_frac": 0.2,
+      "use_bic": true,
+      "bic_delta": 0.0,
+      "sil_min": 0.05,
+      "precip_rule": "smaller",
+      "median_size": 0,
+      "min_component_size": 0
+    }
+  },
+  "precip": {
+    "method": "gmm",
+    "feature_set": "all",
+    "radial_bins": 40,
+    "minor_frac": 0.09765625,
+    "frac_label1": 0.09765625,
+    "bic1": -247099.05655127935,
+    "bic2": -313936.40374229755,
+    "silhouette": NaN,
+    "cfg": {
+      "max_minor_frac": 0.2,
+      "use_bic": true,
+      "bic_delta": 0.0,
+      "sil_min": 0.05,
+      "precip_rule": "smaller",
+      "median_size": 0,
+      "min_component_size": 0
+    }
+  }
+}
