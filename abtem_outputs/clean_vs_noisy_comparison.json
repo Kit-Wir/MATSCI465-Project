@@ -1,0 +1,108 @@
+{
+  "clean": {
+    "tag": "clean",
+    "settings": {
+      "radial_bins": 40,
+      "center_mask_frac": 0.06,
+      "normalize": "sum",
+      "bin": "4x4"
+    },
+    "unbinned_baseline": {
+      "matrix_fp_frac": 0.5,
+      "pre_IoU": 0.16417910447761153,
+      "pre_F1": 0.28205128205128144,
+      "pre_precision": 0.18539325842696575,
+      "pre_recall": 0.5892857142857091,
+      "pre_TP": 66,
+      "pre_FP": 290,
+      "pre_FN": 46,
+      "pre_pred_frac": 0.34765625,
+      "pre_gt_frac": 0.109375
+    },
+    "unbinned_fp_suppressed": {
+      "matrix_fp_frac": 0.0,
+      "decision_mat": "no-precip (balanced clusters, minor_frac=0.500)",
+      "decision_pre": "no-precip (balanced clusters, minor_frac=0.348)",
+      "k_mat": 1,
+      "k_pre": 1,
+      "pre_IoU": 0.0,
+      "pre_F1": 0.0,
+      "pre_precision": 0.0,
+      "pre_recall": 0.0,
+      "pre_TP": 0,
+      "pre_FP": 0,
+      "pre_FN": 112,
+      "pre_pred_frac": 0.0,
+      "pre_gt_frac": 0.109375
+    },
+    "binned_fp_suppressed": {
+      "matrix_fp_frac": 0.0,
+      "decision_mat": "no-precip (balanced clusters, minor_frac=0.500)",
+      "decision_pre": "k=2",
+      "k_mat": 1,
+      "k_pre": 2,
+      "pre_IoU": 0.44444444444439507,
+      "pre_F1": 0.615384615384568,
+      "pre_precision": 0.44444444444439507,
+      "pre_recall": 0.99999999999975,
+      "pre_TP": 4,
+      "pre_FP": 5,
+      "pre_FN": 0,
+      "pre_pred_frac": 0.140625,
+      "pre_gt_frac": 0.0625
+    }
+  },
+  "noisy": {
+    "tag": "noisy",
+    "settings": {
+      "radial_bins": 40,
+      "center_mask_frac": 0.06,
+      "normalize": "sum",
+      "bin": "4x4"
+    },
+    "unbinned_baseline": {
+      "matrix_fp_frac": 0.25,
+      "pre_IoU": 0.10743801652892551,
+      "pre_F1": 0.1940298507462685,
+      "pre_precision": 0.10833333333333321,
+      "pre_recall": 0.9285714285714203,
+      "pre_TP": 104,
+      "pre_FP": 856,
+      "pre_FN": 8,
+      "pre_pred_frac": 0.9375,
+      "pre_gt_frac": 0.109375
+    },
+    "unbinned_fp_suppressed": {
+      "matrix_fp_frac": 0.0,
+      "decision_mat": "no-precip (balanced clusters, minor_frac=0.250)",
+      "decision_pre": "k=2",
+      "k_mat": 1,
+      "k_pre": 2,
+      "pre_IoU": 0.04761904761904734,
+      "pre_F1": 0.0909090909090904,
+      "pre_precision": 0.12499999999999806,
+      "pre_recall": 0.0714285714285708,
+      "pre_TP": 8,
+      "pre_FP": 56,
+      "pre_FN": 104,
+      "pre_pred_frac": 0.0625,
+      "pre_gt_frac": 0.109375
+    },
+    "binned_fp_suppressed": {
+      "matrix_fp_frac": 0.0,
+      "decision_mat": "no-precip (balanced clusters, minor_frac=0.438)",
+      "decision_pre": "k=2",
+      "k_mat": 1,
+      "k_pre": 2,
+      "pre_IoU": 0.99999999999975,
+      "pre_F1": 0.999999999999875,
+      "pre_precision": 0.99999999999975,
+      "pre_recall": 0.99999999999975,
+      "pre_TP": 4,
+      "pre_FP": 0,
+      "pre_FN": 0,
+      "pre_pred_frac": 0.0625,
+      "pre_gt_frac": 0.0625
+    }
+  }
+}
